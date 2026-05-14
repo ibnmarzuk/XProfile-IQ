@@ -6,24 +6,23 @@
 const CONFIG = {
 
   // ── RapidAPI Credentials ──────────────────────────────────
-  // Replace with your actual RapidAPI key
   // Get yours free at: https://rapidapi.com/
-  RAPIDAPI_KEY: '4d98f80e0emsh2f22ee22ae4bb0cp13092fjsnbf91e7239658',
+  RAPIDAPI_KEY: '290f2cb866mshffddb2a74f2425cp18f19fjsn85f166580c4e',
 
-  // ── API Host & Endpoints ──────────────────────────────────
-  API_HOST: 'twitter-api45.p.rapidapi.com',
+  // ── API Host & Endpoints ─────────────────────��────────────
+  API_HOST: 'twitter-x.p.rapidapi.com',
 
   ENDPOINTS: {
-    PROFILE:  'https://twitter-api45.p.rapidapi.com/screenname.php',
-    TIMELINE: 'https://twitter-api45.p.rapidapi.com/timeline.php',
-    SEARCH:   'https://twitter-api45.p.rapidapi.com/search.php',
+    TWEETS_REPLIES: 'https://twitter-x.p.rapidapi.com/user/tweetsandreplies',
+    USER_INFO:      'https://twitter-x.p.rapidapi.com/user/info',
+    SEARCH:         'https://twitter-x.p.rapidapi.com/search',
   },
 
   // ── Request Headers ───────────────────────────────────────
   get HEADERS() {
     return {
-      'X-RapidAPI-Key':  this.RAPIDAPI_KEY,
-      'X-RapidAPI-Host': this.API_HOST,
+      'x-rapidapi-key':  this.RAPIDAPI_KEY,
+      'x-rapidapi-host': this.API_HOST,
     };
   },
 
