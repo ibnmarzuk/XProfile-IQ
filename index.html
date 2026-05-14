@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="XProfile IQ — X (Twitter) profile intelligence. Analyze any profile, get engagement stats, follower insights, and an AI-powered IQ score." />
+  <meta property="og:title" content="XProfile IQ" />
+  <meta property="og:description" content="Turn any X profile into actionable intelligence." />
+  <meta property="og:type" content="website" />
+  <title>XProfile IQ — X Profile Intelligence</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/design-system.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════ SEARCH PAGE ══ -->
+  <div id="page-search" class="page page--active">
+
+    <!-- Nav -->
+    <nav class="search-nav">
+      <div class="logo">
+        <span class="logo__icon">⚡</span>
+        <span class="logo__text">XProfile <strong>IQ</strong></span>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <main class="search-hero">
+      <div class="hero__badge">AI-Powered Profile Intelligence</div>
+      <h1 class="hero__title">
+        Decode any<br />
+        <span class="gradient-text">X Profile</span> instantly
+      </h1>
+      <p class="hero__subtitle">
+        Get engagement stats, follower insights, activity patterns,<br class="desktop-only" />
+        and a 0–100 IQ score for any public X account.
+      </p>
+
+      <!-- Search Box -->
+      <div class="search-box" id="search-box">
+        <span class="search-box__at">@</span>
+        <input
+          type="text"
+          id="search-input"
+          class="search-box__input"
+          placeholder="elonmusk"
+          autocomplete="off"
+          spellcheck="false"
+          maxlength="50"
+        />
+        <button id="search-btn" class="search-box__btn">
+          <span class="btn-text">Analyze</span>
+          <span class="btn-loader hidden">...</span>
+        </button>
+      </div>
+      <p class="search-error hidden" id="search-error"></p>
+
+      <!-- Recent Searches -->
+      <div class="recent-searches" id="recent-searches"></div>
+
+      <!-- Stats Strip -->
+      <div class="stats-strip">
+        <div class="stat-item"><span class="stat-num">100+</span><span class="stat-label">Metrics Analyzed</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat-item"><span class="stat-num">Real</span><span class="stat-label">Live X Data</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat-item"><span class="stat-num">Free</span><span class="stat-label">No Signup</span></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ══════════════════════════════════════ DASHBOARD PAGE ══ -->
+  <div id="page-dashboard" class="page">
+
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar__left">
+        <button id="back-btn" class="back-btn">← Back</button>
+        <div class="logo logo--small">
+          <span class="logo__icon">⚡</span>
+          <span class="logo__text">XProfile <strong>IQ</strong></span>
+        </div>
+      </div>
+      <div class="topbar__center">
+        <div class="search-box search-box--mini">
+          <span class="search-box__at">@</span>
+          <input
+            type="text"
+            id="search-input-mini"
+            class="search-box__input"
+            placeholder="Search another profile"
+            autocomplete="off"
+            spellcheck="false"
+            maxlength="50"
+          />
+          <button id="search-btn-mini" class="search-box__btn">Go</button>
+        </div>
+      </div>
+      <div class="topbar__right">
+        <span class="live-badge">● LIVE</span>
+      </div>
+    </header>
+
+    <!-- Dashboard Layout -->
+    <div class="dashboard">
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <!-- Mini Profile -->
+        <div class="sidebar-profile" id="sidebar-profile">
+          <div class="skeleton skeleton--avatar"></div>
+          <div class="skeleton skeleton--line" style="width:80%"></div>
+          <div class="skeleton skeleton--line" style="width:55%"></div>
+        </div>
+
+        <!-- Sidebar Nav -->
+        <nav class="sidebar-nav">
+          <a href="#section-score"      class="sidebar-nav__item active" data-section="score">⚡ IQ Score</a>
+          <a href="#section-profile"    class="sidebar-nav__item" data-section="profile">👤 Profile</a>
+          <a href="#section-engagement" class="sidebar-nav__item" data-section="engagement">📊 Engagement</a>
+          <a href="#section-followers"  class="sidebar-nav__item" data-section="followers">👥 Followers</a>
+          <a href="#section-activity"   class="sidebar-nav__item" data-section="activity">📅 Activity</a>
+          <a href="#section-insights"   class="sidebar-nav__item" data-section="insights">💡 Insights</a>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="dashboard-main">
+
+        <!-- Profile Header -->
+        <section id="section-profile" class="card profile-header-card">
+          <div class="profile-header" id="profile-header">
+            <div class="skeleton skeleton--avatar skeleton--avatar-lg"></div>
+            <div class="profile-header__info">
+              <div class="skeleton skeleton--line" style="width:200px"></div>
+              <div class="skeleton skeleton--line" style="width:140px; margin-top:8px"></div>
+              <div class="skeleton skeleton--line" style="width:320px; margin-top:12px"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- IQ Score -->
+        <section id="section-score" class="card score-card">
+          <div class="card__header">
+            <h2 class="card__title">⚡ Profile IQ Score</h2>
+          </div>
+          <div class="score-body" id="score-body">
+            <div class="skeleton skeleton--score-circle"></div>
+            <div class="score-breakdown" style="flex:1">
+              <div class="skeleton skeleton--line" style="width:90%"></div>
+              <div class="skeleton skeleton--line" style="width:75%; margin-top:8px"></div>
+              <div class="skeleton skeleton--line" style="width:60%; margin-top:8px"></div>
+              <div class="skeleton skeleton--line" style="width:80%; margin-top:8px"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Engagement Cards Grid -->
+        <section id="section-engagement" class="section-title-wrap">
+          <h2 class="section-title">📊 Engagement Metrics</h2>
+          <div class="metrics-grid" id="metrics-grid">
+            <div class="metric-card skeleton-card"><div class="skeleton skeleton--line"></div><div class="skeleton skeleton--num"></div></div>
+            <div class="metric-card skeleton-card"><div class="skeleton skeleton--line"></div><div class="skeleton skeleton--num"></div></div>
+            <div class="metric-card skeleton-card"><div class="skeleton skeleton--line"></div><div class="skeleton skeleton--num"></div></div>
+            <div class="metric-card skeleton-card"><div class="skeleton skeleton--line"></div><div class="skeleton skeleton--num"></div></div>
+          </div>
+        </section>
+
+        <!-- Follower Intelligence -->
+        <section id="section-followers" class="section-title-wrap">
+          <h2 class="section-title">👥 Follower Intelligence</h2>
+          <div class="followers-grid" id="followers-grid">
+            <div class="skeleton skeleton--block"></div>
+            <div class="skeleton skeleton--block"></div>
+          </div>
+        </section>
+
+        <!-- Activity Timeline -->
+        <section id="section-activity" class="section-title-wrap">
+          <h2 class="section-title">📅 Activity Timeline</h2>
+          <div class="card activity-card" id="activity-card">
+            <div class="skeleton skeleton--block" style="height:160px"></div>
+          </div>
+        </section>
+
+        <!-- Insight Feed -->
+        <section id="section-insights" class="section-title-wrap">
+          <h2 class="section-title">💡 AI Insights</h2>
+          <div class="insights-list" id="insights-list">
+            <div class="skeleton skeleton--block"></div>
+            <div class="skeleton skeleton--block"></div>
+            <div class="skeleton skeleton--block"></div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ TOAST ══ -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- JS -->
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/score.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

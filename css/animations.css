@@ -1,0 +1,721 @@
+/* ═══════════════════════════════════════════════════════════
+   ANIMATIONS.CSS — XProfile IQ
+   Keyframes, transitions, micro-interactions, loading states
+═══════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════
+   KEYFRAMES
+═══════════════════════════════════════════════════════════ */
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Fade in */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Fade + slide up */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade + slide down */
+@keyframes fadeSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade + slide in from left */
+@keyframes fadeSlideLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Scale in */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Score count-up pulse */
+@keyframes scorePulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+/* Dot pulse for live badge */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+/* Spin for loading */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Float for hero elements */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+/* Glow pulse */
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 16px rgba(79,159,255,0.2); }
+  50%       { box-shadow: 0 0 32px rgba(79,159,255,0.45); }
+}
+
+/* Bar grow (for freq bars) */
+@keyframes barGrow {
+  from { height: 0%; }
+  to   { height: var(--bar-height); }
+}
+
+/* Slide in from right (dashboard page) */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Number tick */
+@keyframes numberTick {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Insight stagger */
+@keyframes insightAppear {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PAGE TRANSITIONS
+═══════════════════════════════════════════════════════════ */
+
+.page--active {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+#page-dashboard.page--active {
+  animation: fadeIn 0.25s ease forwards;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   COMPONENT ENTRANCE ANIMATIONS
+═══════════════════════════════════════════════════════════ */
+
+/* Cards stagger in */
+.card {
+  animation: fadeSlideUp 0.4s ease forwards;
+}
+
+.section-title-wrap {
+  animation: fadeSlideUp 0.4s ease forwards;
+}
+
+/* Stagger children */
+.metrics-grid .metric-card:nth-child(1) { animation: fadeSlideUp 0.3s ease 0.05s both; }
+.metrics-grid .metric-card:nth-child(2) { animation: fadeSlideUp 0.3s ease 0.10s both; }
+.metrics-grid .metric-card:nth-child(3) { animation: fadeSlideUp 0.3s ease 0.15s both; }
+.metrics-grid .metric-card:nth-child(4) { animation: fadeSlideUp 0.3s ease 0.20s both; }
+
+.insights-list .insight-item:nth-child(1) { animation: insightAppear 0.4s ease 0.05s both; }
+.insights-list .insight-item:nth-child(2) { animation: insightAppear 0.4s ease 0.15s both; }
+.insights-list .insight-item:nth-child(3) { animation: insightAppear 0.4s ease 0.25s both; }
+.insights-list .insight-item:nth-child(4) { animation: insightAppear 0.4s ease 0.35s both; }
+.insights-list .insight-item:nth-child(5) { animation: insightAppear 0.4s ease 0.45s both; }
+
+/* Sidebar slide in */
+.sidebar {
+  animation: fadeSlideLeft 0.4s ease forwards;
+}
+
+/* Score circle entrance */
+.score-circle-wrap {
+  animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Score number pulse after count-up */
+.score-number.score-number--done {
+  animation: scorePulse 0.4s ease forwards;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SEARCH PAGE ANIMATIONS
+═══════════════════════════════════════════════════════════ */
+
+.hero__badge {
+  animation: fadeSlideDown 0.5s ease 0.1s both;
+}
+
+.hero__title {
+  animation: fadeSlideUp 0.6s ease 0.2s both;
+}
+
+.hero__subtitle {
+  animation: fadeSlideUp 0.6s ease 0.3s both;
+}
+
+.search-box {
+  animation: fadeSlideUp 0.6s ease 0.4s both;
+}
+
+.recent-searches {
+  animation: fadeSlideUp 0.5s ease 0.5s both;
+}
+
+.stats-strip {
+  animation: fadeSlideUp 0.5s ease 0.6s both;
+}
+
+/* Search box focus glow animation */
+.search-box:focus-within {
+  animation: glowPulse 2s ease infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LOADING STATES
+═══════════════════════════════════════════════════════════ */
+
+/* Spinning loader dot */
+.loading-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+/* Button loading state */
+.search-box__btn.loading .btn-text {
+  display: none;
+}
+
+.search-box__btn.loading .btn-loader {
+  display: inline-flex !important;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.search-box__btn.loading .btn-loader::after {
+  content: '';
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* Skeleton pulse variation */
+.skeleton--pulse {
+  animation: shimmer 1.8s ease infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HOVER MICRO-INTERACTIONS
+═══════════════════════════════════════════════════════════ */
+
+/* Metric card lift */
+.metric-card {
+  transition:
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* Insight item slide */
+.insight-item {
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+/* Recent chip bounce */
+.recent-chip {
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.recent-chip:hover {
+  transform: scale(1.04);
+}
+
+/* Sidebar nav item */
+.sidebar-nav__item {
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.sidebar-nav__item:hover {
+  transform: translateX(4px);
+}
+
+.sidebar-nav__item.active {
+  transform: translateX(4px);
+}
+
+/* Progress bar fill animation */
+.progress-bar__fill {
+  transition: width 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Freq bar grow on enter */
+.freq-bar {
+  transition:
+    opacity 0.2s ease,
+    background 0.2s ease,
+    height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Tweet item hover */
+.tweet-item {
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.tweet-item:hover {
+  transform: translateX(3px);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TOAST ANIMATION
+═══════════════════════════════════════════════════════════ */
+
+.toast {
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   REDUCED MOTION SUPPORT
+═══════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,/* ═══════════════════════════════════════════════════════════
+   ANIMATIONS.CSS — XProfile IQ
+   Keyframes, transitions, micro-interactions, loading states
+═══════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════
+   KEYFRAMES
+═══════════════════════════════════════════════════════════ */
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Fade in */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Fade + slide up */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade + slide down */
+@keyframes fadeSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade + slide in from left */
+@keyframes fadeSlideLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Scale in */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Score count-up pulse */
+@keyframes scorePulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+/* Dot pulse for live badge */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+/* Spin for loading */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Float for hero elements */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+/* Glow pulse */
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 16px rgba(79,159,255,0.2); }
+  50%       { box-shadow: 0 0 32px rgba(79,159,255,0.45); }
+}
+
+/* Bar grow (for freq bars) */
+@keyframes barGrow {
+  from { height: 0%; }
+  to   { height: var(--bar-height); }
+}
+
+/* Slide in from right (dashboard page) */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Number tick */
+@keyframes numberTick {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Insight stagger */
+@keyframes insightAppear {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PAGE TRANSITIONS
+═══════════════════════════════════════════════════════════ */
+
+.page--active {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+#page-dashboard.page--active {
+  animation: fadeIn 0.25s ease forwards;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   COMPONENT ENTRANCE ANIMATIONS
+═══════════════════════════════════════════════════════════ */
+
+/* Cards stagger in */
+.card {
+  animation: fadeSlideUp 0.4s ease forwards;
+}
+
+.section-title-wrap {
+  animation: fadeSlideUp 0.4s ease forwards;
+}
+
+/* Stagger children */
+.metrics-grid .metric-card:nth-child(1) { animation: fadeSlideUp 0.3s ease 0.05s both; }
+.metrics-grid .metric-card:nth-child(2) { animation: fadeSlideUp 0.3s ease 0.10s both; }
+.metrics-grid .metric-card:nth-child(3) { animation: fadeSlideUp 0.3s ease 0.15s both; }
+.metrics-grid .metric-card:nth-child(4) { animation: fadeSlideUp 0.3s ease 0.20s both; }
+
+.insights-list .insight-item:nth-child(1) { animation: insightAppear 0.4s ease 0.05s both; }
+.insights-list .insight-item:nth-child(2) { animation: insightAppear 0.4s ease 0.15s both; }
+.insights-list .insight-item:nth-child(3) { animation: insightAppear 0.4s ease 0.25s both; }
+.insights-list .insight-item:nth-child(4) { animation: insightAppear 0.4s ease 0.35s both; }
+.insights-list .insight-item:nth-child(5) { animation: insightAppear 0.4s ease 0.45s both; }
+
+/* Sidebar slide in */
+.sidebar {
+  animation: fadeSlideLeft 0.4s ease forwards;
+}
+
+/* Score circle entrance */
+.score-circle-wrap {
+  animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Score number pulse after count-up */
+.score-number.score-number--done {
+  animation: scorePulse 0.4s ease forwards;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SEARCH PAGE ANIMATIONS
+═══════════════════════════════════════════════════════════ */
+
+.hero__badge {
+  animation: fadeSlideDown 0.5s ease 0.1s both;
+}
+
+.hero__title {
+  animation: fadeSlideUp 0.6s ease 0.2s both;
+}
+
+.hero__subtitle {
+  animation: fadeSlideUp 0.6s ease 0.3s both;
+}
+
+.search-box {
+  animation: fadeSlideUp 0.6s ease 0.4s both;
+}
+
+.recent-searches {
+  animation: fadeSlideUp 0.5s ease 0.5s both;
+}
+
+.stats-strip {
+  animation: fadeSlideUp 0.5s ease 0.6s both;
+}
+
+/* Search box focus glow animation */
+.search-box:focus-within {
+  animation: glowPulse 2s ease infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LOADING STATES
+═══════════════════════════════════════════════════════════ */
+
+/* Spinning loader dot */
+.loading-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+/* Button loading state */
+.search-box__btn.loading .btn-text {
+  display: none;
+}
+
+.search-box__btn.loading .btn-loader {
+  display: inline-flex !important;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.search-box__btn.loading .btn-loader::after {
+  content: '';
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* Skeleton pulse variation */
+.skeleton--pulse {
+  animation: shimmer 1.8s ease infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HOVER MICRO-INTERACTIONS
+═══════════════════════════════════════════════════════════ */
+
+/* Metric card lift */
+.metric-card {
+  transition:
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* Insight item slide */
+.insight-item {
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+/* Recent chip bounce */
+.recent-chip {
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.recent-chip:hover {
+  transform: scale(1.04);
+}
+
+/* Sidebar nav item */
+.sidebar-nav__item {
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.sidebar-nav__item:hover {
+  transform: translateX(4px);
+}
+
+.sidebar-nav__item.active {
+  transform: translateX(4px);
+}
+
+/* Progress bar fill animation */
+.progress-bar__fill {
+  transition: width 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Freq bar grow on enter */
+.freq-bar {
+  transition:
+    opacity 0.2s ease,
+    background 0.2s ease,
+    height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Tweet item hover */
+.tweet-item {
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.tweet-item:hover {
+  transform: translateX(3px);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TOAST ANIMATION
+═══════════════════════════════════════════════════════════ */
+
+.toast {
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   REDUCED MOTION SUPPORT
+═══════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .skeleton {
+    animation: none;
+    background: var(--bg-tertiary);
+  }
+}
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .skeleton {
+    animation: none;
+    background: var(--bg-tertiary);
+  }
+}
