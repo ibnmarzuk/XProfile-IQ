@@ -28,6 +28,8 @@ const API = (() => {
     const qs = new URLSearchParams(params).toString();
     const fullURL = qs ? `${url}?${qs}` : url;
 
+    console.log('🔗 Fetching:', fullURL);
+
     let response;
     try {
       response = await fetch(fullURL, {
@@ -35,8 +37,11 @@ const API = (() => {
         headers: CONFIG.HEADERS,
       });
     } catch (err) {
+      console.error('❌ Network Error:', err);
       throw new APIError(CONFIG.ERRORS.NETWORK, 'NETWORK');
     }
+
+    console.log('📊 Response Status:', response.status);
 
     if (response.status === 404) {
       throw new APIError(CONFIG.ERRORS.NOT_FOUND, 'NOT_FOUND');
@@ -53,6 +58,7 @@ const API = (() => {
     let data;
     try {
       data = await response.json();
+      console.log('✅ Response Data:', data);
     } catch {
       throw new APIError(CONFIG.ERRORS.GENERIC, 'PARSE_ERROR');
     }
@@ -213,8 +219,8 @@ const API = (() => {
     const cached = _readCache(key);
     if (cached) return cached;
 
-    const raw = await _fetch(CONFIG.ENDPOINTS.PROFILE, {
-      screenname: username,
+    const raw = await _fetch(CONFIG.ENDPOINTS.USER_INFO, {
+      username: username,
     });
 
     const normalized = _normalizeProfile(raw);
@@ -232,8 +238,9 @@ const API = (() => {
     const cached = _readCache(key);
     if (cached) return cached;
 
-    const raw = await _fetch(CONFIG.ENDPOINTS.TIMELINE, {
-      screenname: username,
+    const raw = await _fetch(CONFIG.ENDPOINTS.TWEETS_REPLIES, {
+      user_id: username,
+      limit: CONFIG.APP.TIMELINE_COUNT,
     });
 
     const normalized = _normalizeTimeline(raw);
@@ -290,7 +297,7 @@ const API = (() => {
 
   /* ─────────────────────────────────────────────────────────
      RECENT SEARCHES
-  ───────────────────────────────────────────────────────── */
+  ─────────────────────────────────────��─────────────────── */
 
   function getRecentSearches() {
     try {
