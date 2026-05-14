@@ -25,21 +25,16 @@ const UI = (() => {
    */
   function _escape(str) {
     if (!str) return '';
-    return String(str)
-      .replace(/&/g,  '&amp;')
-      .replace(/</g,  '&lt;')
-      .replace(/>/g,  '&gt;')
-      .replace(/"/g,  '&quot;')
-      .replace(/'/g,  '&#39;');
+    const div = document.createElement('div');
+    div.textContent = String(str);
+    return div.innerHTML;
   }
 
   /**
    * Get element by id — throws if missing
    */
   function _el(id) {
-    const el = document.getElementById(id);
-    if (!el) console.warn(`UI: element #${id} not found`);
-    return el;
+    return document.getElementById(id);
   }
 
   /**
@@ -68,7 +63,7 @@ const UI = (() => {
       search.style.display = 'flex';
       search.classList.add('page--active');
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
   }
 
   /**
@@ -85,7 +80,7 @@ const UI = (() => {
       dashboard.style.display = 'flex';
       dashboard.classList.add('page--active');
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
   }
 
   /* ─────────────────────────────────────────────────────────
@@ -96,11 +91,10 @@ const UI = (() => {
    * Set search button to loading state
    */
   function setSearchLoading(isLoading) {
-    const btns = [_el('search-btn'), _el('search-btn-mini')];
-    const inputs = [_el('search-input'), _el('search-input-mini')];
+    const btns = [_el('search-btn'), _el('search-btn-mini')].filter(Boolean);
+    const inputs = [_el('search-input'), _el('search-input-mini')].filter(Boolean);
 
     btns.forEach(btn => {
-      if (!btn) return;
       if (isLoading) {
         btn.classList.add('loading');
         btn.disabled = true;
@@ -111,7 +105,7 @@ const UI = (() => {
     });
 
     inputs.forEach(input => {
-      if (input) input.disabled = isLoading;
+      input.disabled = isLoading;
     });
   }
 
@@ -139,27 +133,32 @@ const UI = (() => {
    */
   function renderRecentSearches(recents) {
     const container = _el('recent-searches');
-    if (!container) return;
-
-    if (!recents || recents.length === 0) {
-      container.innerHTML = '';
+    if (!container || !recents || recents.length === 0) {
+      if (container) container.innerHTML = '';
       return;
     }
 
     container.innerHTML = `
-      <div class="recent-searches__label">
-        🕐 Recent
-      </div>
+      <div class="recent-searches__label">🕐 Recent</div>
       ${recents.map(handle => `
-        <button
-          class="recent-chip"
-          data-handle="${_escape(handle)}"
-          aria-label="Search ${_escape(handle)}"
-        >
+        <button class="recent-chip" data-handle="${_escape(handle)}">
           @${_escape(handle)}
         </button>
       `).join('')}
     `;
+  }
+
+  /**
+   * Attach click handlers to recent search chips
+   */
+  function initRecentSearchClicks() {
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('.recent-chip')) {
+        const handle = e.target.dataset.handle || e.target.textContent.replace('@', '').trim();
+        document.getElementById('search-input').value = handle;
+        document.getElementById('search-btn').click();
+      }
+    });
   }
 
   /* ─────────────────────────────────────────────────────────
@@ -173,22 +172,17 @@ const UI = (() => {
     const container = _el('profile-header');
     if (!container) return;
 
-    const avatarSrc  = _escape(profile.avatar  || '');
-    const name       = _escape(profile.name    || 'Unknown');
-    const username   = _escape(profile.username || '');
-    const bio        = _escape(profile.bio      || '');
-    const location   = _escape(profile.location || '');
-    const joined     = _escape(profile.joined   || '');
-    const website    = _escape(profile.website  || '');
+    const avatar = _escape(profile.avatar || '');
+    const name = _escape(profile.name || 'Unknown');
+    const username = _escape(profile.username || '');
+    const bio = _escape(profile.bio || '');
+    const location = _escape(profile.location || '');
+    const joined = _escape(profile.joined || '');
+    const website = _escape(profile.website || '');
 
     container.innerHTML = `
       <div class="profile-avatar-wrap">
-        <img
-          class="profile-avatar"
-          src="${avatarSrc}"
-          alt="${name}'s avatar"
-          onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%231A1A28%22/><text x=%2250%22 y=%2260%22 text-anchor=%22middle%22 font-size=%2240%22>👤</text></svg>'"
-        />
+        <img class="profile-avatar" src="${avatar}" alt="${name}'s avatar" loading="lazy" />
         ${profile.verified ? '<div class="profile-verified" title="Verified">✓</div>' : ''}
       </div>
 
@@ -205,33 +199,12 @@ const UI = (() => {
         </div>
 
         <div class="profile-handle">@${username}</div>
-
         ${bio ? `<p class="profile-bio">${bio}</p>` : ''}
 
         <div class="profile-meta">
-          ${location ? `
-            <div class="profile-meta__item">
-              <span>📍</span>
-              <span>${location}</span>
-            </div>
-          ` : ''}
-          ${joined ? `
-            <div class="profile-meta__item">
-              <span>📅</span>
-              <span>Joined ${joined}</span>
-            </div>
-          ` : ''}
-          ${website ? `
-            <div class="profile-meta__item">
-              <span>🔗</span>
-              
-                href="${website.startsWith('http') ? website : 'https://' + website}"
-                target="_blank"
-                rel="noopener noreferrer"
-                style="color: var(--accent-blue)"
-              >${website.replace(/^https?:\/\//, '').slice(0, 30)}</a>
-            </div>
-          ` : ''}
+          ${location ? `<div class="profile-meta__item"><span>📍</span><span>${location}</span></div>` : ''}
+          ${joined ? `<div class="profile-meta__item"><span>📅</span><span>Joined ${joined}</span></div>` : ''}
+          ${website ? `<div class="profile-meta__item"><span>🔗</span><a href="${website}" target="_blank" rel="noopener">${website.replace(/^https?:\/\//, '').slice(0,30)}</a></div>` : ''}
         </div>
 
         <div class="profile-stats">
@@ -264,12 +237,7 @@ const UI = (() => {
     if (!container) return;
 
     container.innerHTML = `
-      <img
-        class="sidebar-avatar"
-        src="${_escape(profile.avatar || '')}"
-        alt="${_escape(profile.name || '')}"
-        onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%231A1A28%22/><text x=%2250%22 y=%2260%22 text-anchor=%22middle%22 font-size=%2240%22>👤</text></svg>'"
-      />
+      <img class="sidebar-avatar" src="${_escape(profile.avatar || '')}" alt="${_escape(profile.name || '')}" loading="lazy" />
       <div class="sidebar-name">${_escape(profile.name || 'Unknown')}</div>
       <div class="sidebar-handle">@${_escape(profile.username || '')}</div>
       <div style="margin-top: var(--space-2)">
@@ -291,16 +259,12 @@ const UI = (() => {
 
     container.innerHTML = `
       <div id="score-circle-container"></div>
-
-      <div class="score-breakdown" id="score-breakdown-bars">
-        <!-- filled by CHARTS.renderBreakdownBars -->
-      </div>
+      <div class="score-breakdown" id="score-breakdown-bars"></div>
     `;
 
-    // Append verdict below score body
+    // Append verdict
     const card = container.closest('.score-card');
     if (card) {
-      // Remove old verdict if re-rendering
       const old = card.querySelector('.score-verdict');
       if (old) old.remove();
 
@@ -324,6 +288,24 @@ const UI = (() => {
   }
 
   /* ─────────────────────────────────────────────────────────
+     METRICS
+  ───────────────────────────────────────────────────────── */
+
+  function renderMetrics(metrics) {
+    const container = _el('metrics-grid');
+    if (!container) return;
+
+    container.innerHTML = metrics.map(m => `
+      <div class="metric-card">
+        <div class="metric-card__icon">${m.icon}</div>
+        <div class="metric-card__label">${m.label}</div>
+        <div class="metric-card__value">${m.value}</div>
+        ${m.sub ? `<div class="metric-card__sub">${m.sub}</div>` : ''}
+      </div>
+    `).join('');
+  }
+
+  /* ─────────────────────────────────────────────────────────
      FOLLOWER INTELLIGENCE
   ───────────────────────────────────────────────────────── */
 
@@ -335,7 +317,6 @@ const UI = (() => {
     if (!container) return;
 
     container.innerHTML = `
-      <!-- Ratio card -->
       <div class="follower-card">
         <div class="follower-card__title">📊 Follower / Following Ratio</div>
         <div id="ratio-bar-container"></div>
@@ -356,20 +337,15 @@ const UI = (() => {
           </div>
           <div class="follower-stat-row">
             <span class="follower-stat-row__label">Audience Tier</span>
-            <span class="follower-stat-row__value">
-              ${followers.tier.emoji} ${followers.tier.label}-tier
-            </span>
+            <span class="follower-stat-row__value">⭐ ${followers.tier || 'Growing'}</span>
           </div>
           <div class="follower-stat-row">
             <span class="follower-stat-row__label">Ratio Score</span>
-            <span class="follower-stat-row__value" style="color: var(--accent-blue)">
-              ${followers.ratioScore}/100
-            </span>
+            <span class="follower-stat-row__value" style="color: var(--accent-blue)">${followers.ratioScore || 0}/100</span>
           </div>
         </div>
       </div>
 
-      <!-- Audience quality card -->
       <div class="follower-card">
         <div class="follower-card__title">👥 Audience Breakdown</div>
         <div>
@@ -383,35 +359,17 @@ const UI = (() => {
           </div>
           <div class="follower-stat-row">
             <span class="follower-stat-row__label">Audience Score</span>
-            <span class="follower-stat-row__value" style="color: var(--accent-purple)">
-              ${followers.audienceScore}/100
-            </span>
+            <span class="follower-stat-row__value" style="color: var(--accent-purple)">${followers.audienceScore || 0}/100</span>
           </div>
           <div class="follower-stat-row">
             <span class="follower-stat-row__label">High Ratio</span>
-            <span class="follower-stat-row__value">
-              ${followers.isHighRatio ? '✅ Yes' : '❌ No'}
-            </span>
-          </div>
-          <div class="follower-stat-row">
-            <span class="follower-stat-row__label">Authority Signal</span>
-            <span class="follower-stat-row__value">
-              ${followers.isAuthority ? '✅ Strong' :
-                followers.isInfluencer ? '🟡 Moderate' : '❌ Developing'}
-            </span>
+            <span class="follower-stat-row__value">${followers.isHighRatio ? '✅ Yes' : '❌ No'}</span>
           </div>
         </div>
       </div>
     `;
 
-    // Render ratio bar chart
-    CHARTS.renderRatioBar(
-      'ratio-bar-container',
-      followers.followerPct,
-      followers.followingPct,
-      followers.followers,
-      followers.following
-    );
+    CHARTS.renderRatioBar('ratio-bar-container', followers.followerPct || 50, followers.followingPct || 50);
   }
 
   /* ─────────────────────────────────────────────────────────
@@ -426,57 +384,39 @@ const UI = (() => {
     if (!container) return;
 
     container.innerHTML = `
-      <!-- Weekly bars -->
       <div id="activity-bars-container"></div>
 
-      <!-- Activity stats -->
       <div class="activity-stats">
         <div class="activity-stat">
-          <span class="activity-stat__value">${activity.tweetsPerDay < 1
-            ? activity.tweetsPerDay.toFixed(2)
-            : activity.tweetsPerDay.toFixed(1)}</span>
+          <span class="activity-stat__value">${(activity.tweetsPerDay || 0).toFixed(1)}</span>
           <span class="activity-stat__label">Tweets/Day</span>
         </div>
         <div class="activity-stat">
-          <span class="activity-stat__value">${activity.tweetsPerWeek}</span>
+          <span class="activity-stat__value">${activity.tweetsPerWeek || 0}</span>
           <span class="activity-stat__label">Tweets/Week</span>
         </div>
         <div class="activity-stat">
-          <span class="activity-stat__value">${activity.lastActive}</span>
+          <span class="activity-stat__value">${activity.lastActive || 'N/A'}</span>
           <span class="activity-stat__label">Last Active</span>
         </div>
       </div>
 
-      <!-- Account age row -->
-      <div style="
-        display: flex;
-        justify-content: space-between;
-        padding: var(--space-3) var(--space-4);
-        background: var(--bg-tertiary);
-        border-radius: var(--radius-md);
-        font-size: var(--text-sm);
-      ">
+      <div style="display: flex; justify-content: space-between; padding: var(--space-3) var(--space-4); background: var(--bg-tertiary); border-radius: var(--radius-md); font-size: var(--text-sm);">
         <span style="color: var(--text-secondary)">Account Age</span>
-        <span style="font-weight: 600">${_formatAge(activity.accountAgeDays)}</span>
+        <span style="font-weight: 600">${_formatAge(activity.accountAgeDays || 0)}</span>
       </div>
 
-      <!-- Recent tweets -->
       ${tweets && tweets.length > 0 ? `
         <div>
-          <div class="activity-chart-label" style="margin-bottom: var(--space-3)">
-            Recent Tweets
-          </div>
+          <div class="activity-chart-label" style="margin-bottom: var(--space-3)">Recent Tweets</div>
           <div class="recent-tweets">
             ${tweets.slice(0, 3).map(t => `
               <div class="tweet-item">
-                <div class="tweet-item__text">${_escape(t.text || '').slice(0, 180)}${
-                  (t.text || '').length > 180 ? '…' : ''
-                }</div>
+                <div class="tweet-item__text">${_escape((t.text || '').slice(0, 180))}${(t.text || '').length > 180 ? '…' : ''}</div>
                 <div class="tweet-item__meta">
-                  <span class="tweet-item__stat">❤️ ${_fmt(t.likes)}</span>
-                  <span class="tweet-item__stat">🔁 ${_fmt(t.retweets)}</span>
-                  <span class="tweet-item__stat">💬 ${_fmt(t.replies)}</span>
-                  ${t.views ? `<span class="tweet-item__stat">👁 ${_fmt(t.views)}</span>` : ''}
+                  <span class="tweet-item__stat">❤️ ${_fmt(t.likes || 0)}</span>
+                  <span class="tweet-item__stat">🔁 ${_fmt(t.retweets || 0)}</span>
+                  <span class="tweet-item__stat">💬 ${_fmt(t.replies || 0)}</span>
                 </div>
               </div>
             `).join('')}
@@ -485,23 +425,16 @@ const UI = (() => {
       ` : ''}
     `;
 
-    // Render activity bars
-    CHARTS.renderActivityBars('activity-bars-container', activity.weeklyBreakdown);
+    CHARTS.renderActivityBars('activity-bars-container', activity.weeklyBreakdown || []);
   }
 
-  /**
-   * Format account age in days to human-readable
-   */
   function _formatAge(days) {
     if (days >= 365) {
-      const years  = Math.floor(days / 365);
-      const months = Math.floor((days % 365) / 30);
-      return months > 0 ? `${years}y ${months}m` : `${years} year${years > 1 ? 's' : ''}`;
+      const years = Math.floor(days / 365);
+      return `${years}y`;
     }
-    if (days >= 30) {
-      return `${Math.floor(days / 30)} months`;
-    }
-    return `${days} days`;
+    if (days >= 30) return `${Math.floor(days / 30)}mo`;
+    return `${Math.floor(days)}d`;
   }
 
   /* ─────────────────────────────────────────────────────────
@@ -516,31 +449,19 @@ const UI = (() => {
     if (!container) return;
 
     if (!insights || insights.length === 0) {
-      container.innerHTML = `
-        <div class="error-state">
-          <div class="error-state__icon">💡</div>
-          <p class="error-state__message">No insights available for this profile.</p>
-        </div>
-      `;
+      container.innerHTML = '<div class="error-state" style="padding: var(--space-6); gap: var(--space-2);"><div>💡</div><p>No insights available.</p></div>';
       return;
     }
 
     container.innerHTML = insights.map((insight, i) => `
-      <div
-        class="insight-item"
-        style="animation-delay: ${i * 0.1}s"
-      >
+      <div class="insight-item" style="animation-delay: ${i * 0.05}s">
         <div class="insight-item__icon">${insight.icon}</div>
         <div class="insight-item__content">
           <div class="insight-item__title">${_escape(insight.title)}</div>
           <div class="insight-item__text">${_escape(insight.text)}</div>
         </div>
-        <span class="badge badge--${
-          insight.type === 'positive' ? 'green' :
-          insight.type === 'warning'  ? 'red'   : 'blue'
-        }">
-          ${insight.type === 'positive' ? '✓ Strong' :
-            insight.type === 'warning'  ? '⚠ Watch'  : '→ Neutral'}
+        <span class="badge badge--${insight.type === 'positive' ? 'green' : insight.type === 'warning' ? 'red' : 'blue'}">
+          ${insight.type === 'positive' ? '✓' : insight.type === 'warning' ? '⚠' : '→'}
         </span>
       </div>
     `).join('');
@@ -567,36 +488,18 @@ const UI = (() => {
 
     const titles = {
       NOT_FOUND:  'Profile Not Found',
-      RATE_LIMIT: 'Rate Limit Reached',
+      RATE_LIMIT: 'Rate Limit',
       NETWORK:    'Connection Error',
       NO_KEY:     'API Key Missing',
-      GENERIC:    'Something Went Wrong',
-    };
-
-    const hints = {
-      NOT_FOUND:  'Double-check the username and make sure the account is public.',
-      RATE_LIMIT: 'You\'ve hit the API rate limit. Wait a moment before trying again.',
-      NETWORK:    'Check your internet connection and try again.',
-      NO_KEY:     'Add your RapidAPI key to js/config.js to enable live data.',
-      GENERIC:    'An unexpected error occurred. Please try again.',
+      GENERIC:    'Error',
     };
 
     main.innerHTML = `
       <div class="error-state" style="min-height: 60vh">
         <div class="error-state__icon">${icons[code] || icons.GENERIC}</div>
         <div class="error-state__title">${titles[code] || titles.GENERIC}</div>
-        <p class="error-state__message">
-          ${_escape(message || hints[code] || hints.GENERIC)}
-        </p>
-        <p class="error-state__message" style="font-size: var(--text-sm); margin-top: var(--space-2)">
-          ${hints[code] || ''}
-        </p>
-        <button
-          class="btn btn--primary error-state__btn"
-          onclick="UI.showSearchPage()"
-        >
-          ← Try Another Profile
-        </button>
+        <p class="error-state__message">${_escape(message)}</p>
+        <button class="btn btn--primary" onclick="UI.showSearchPage()">← Try Another</button>
       </div>
     `;
   }
@@ -607,106 +510,46 @@ const UI = (() => {
 
   let _toastTimer = null;
 
-  /**
-   * Show a toast notification
-   * @param {string} message
-   * @param {'info'|'success'|'error'|'warning'} type
-   */
   function showToast(message, type = 'info') {
     const toast = _el('toast');
     if (!toast) return;
 
-    // Clear existing timer
     if (_toastTimer) clearTimeout(_toastTimer);
 
     toast.textContent = message;
-    toast.className   = `toast toast--${type} toast--show`;
+    toast.className = `toast toast--${type} toast--show`;
 
     _toastTimer = setTimeout(() => {
       toast.classList.remove('toast--show');
       setTimeout(() => {
         toast.className = 'toast hidden';
       }, 300);
-    }, CONFIG.APP.TOAST_DURATION);
+    }, 3000);
   }
 
   /* ─────────────────────────────────────────────────────────
-     SKELETON RESET (before re-render)
+     RESET DASHBOARD
   ───────────────────────────────────────────────────────── */
 
-  /**
-   * Reset all dashboard sections to skeleton state
-   */
   function resetDashboard() {
-    _setHTML('profile-header', `
-      <div class="skeleton skeleton--avatar skeleton--avatar-lg"></div>
-      <div class="profile-header__info">
-        <div class="skeleton skeleton--line" style="width:200px"></div>
-        <div class="skeleton skeleton--line" style="width:140px; margin-top:8px"></div>
-        <div class="skeleton skeleton--line" style="width:320px; margin-top:12px"></div>
-      </div>
-    `);
+    _setHTML('profile-header', '<div class="skeleton skeleton--avatar skeleton--avatar-lg"></div><div class="skeleton skeleton--line" style="width:200px; margin-top: 12px"></div>');
+    _setHTML('score-body', '<div class="skeleton skeleton--score-circle"></div><div style="flex:1"><div class="skeleton skeleton--line" style="width:90%"></div><div class="skeleton skeleton--line" style="width:75%; margin-top:8px"></div></div>');
+    _setHTML('metrics-grid', Array(4).fill('<div class="metric-card skeleton-card"><div class="skeleton skeleton--line"></div><div class="skeleton skeleton--num"></div></div>').join(''));
+    _setHTML('followers-grid', '<div class="skeleton skeleton--block"></div><div class="skeleton skeleton--block"></div>');
+    _setHTML('activity-card', '<div class="skeleton skeleton--block" style="height:160px"></div>');
+    _setHTML('insights-list', Array(3).fill('<div class="skeleton skeleton--block"></div>').join(''));
+    _setHTML('sidebar-profile', '<div class="skeleton skeleton--avatar"></div><div class="skeleton skeleton--line" style="width:80%"></div>');
 
-    _setHTML('score-body', `
-      <div class="skeleton skeleton--score-circle"></div>
-      <div class="score-breakdown" style="flex:1">
-        <div class="skeleton skeleton--line" style="width:90%"></div>
-        <div class="skeleton skeleton--line" style="width:75%; margin-top:8px"></div>
-        <div class="skeleton skeleton--line" style="width:60%; margin-top:8px"></div>
-        <div class="skeleton skeleton--line" style="width:80%; margin-top:8px"></div>
-      </div>
-    `);
-
-    // Remove old verdict
     const verdict = document.querySelector('.score-verdict');
     if (verdict) verdict.remove();
-
-    _setHTML('metrics-grid', `
-      <div class="metric-card skeleton-card"><div class="skeleton skeleton--line"></div><div class="skeleton skeleton--num"></div></div>
-      <div class="metric-card skeleton-card"><div class="skeleton skeleton--line"></div><div class="skeleton skeleton--num"></div></div>
-      <div class="metric-card skeleton-card"><div class="skeleton skeleton--line"></div><div class="skeleton skeleton--num"></div></div>
-      <div class="metric-card skeleton-card"><div class="skeleton skeleton--line"></div><div class="skeleton skeleton--num"></div></div>
-    `);
-
-    _setHTML('followers-grid', `
-      <div class="skeleton skeleton--block"></div>
-      <div class="skeleton skeleton--block"></div>
-    `);
-
-    _setHTML('activity-card', `
-      <div class="skeleton skeleton--block" style="height:160px"></div>
-    `);
-
-    _setHTML('insights-list', `
-      <div class="skeleton skeleton--block"></div>
-      <div class="skeleton skeleton--block"></div>
-      <div class="skeleton skeleton--block"></div>
-    `);
-
-    _setHTML('sidebar-profile', `
-      <div class="skeleton skeleton--avatar"></div>
-      <div class="skeleton skeleton--line" style="width:80%"></div>
-      <div class="skeleton skeleton--line" style="width:55%"></div>
-    `);
   }
 
   /* ─────────────────────────────────────────────────────────
-     SIDEBAR NAV ACTIVE STATE
+     SIDEBAR NAV
   ───────────────────────────────────────────────────────── */
 
-  /**
-   * Update active sidebar nav item on scroll
-   */
   function initSidebarNav() {
-    const sections = [
-      'section-score',
-      'section-profile',
-      'section-engagement',
-      'section-followers',
-      'section-activity',
-      'section-insights',
-    ];
-
+    const sections = ['section-score', 'section-profile', 'section-engagement', 'section-followers', 'section-activity', 'section-insights'];
     const navItems = document.querySelectorAll('.sidebar-nav__item');
 
     const observer = new IntersectionObserver(entries => {
@@ -730,20 +573,17 @@ const UI = (() => {
      PLACEHOLDER CYCLING
   ───────────────────────────────────────────────────────── */
 
-  /**
-   * Cycle through placeholder handles in search input
-   */
   function initPlaceholderCycle() {
-    const input   = _el('search-input');
+    const input = _el('search-input');
     if (!input) return;
 
     const handles = CONFIG.PLACEHOLDER_HANDLES;
-    let index     = 0;
+    let index = 0;
 
     setInterval(() => {
       index = (index + 1) % handles.length;
       input.placeholder = handles[index];
-    }, 2500);
+    }, 3000);
   }
 
   /* ─────────────────────────────────────────────────────────
@@ -759,6 +599,7 @@ const UI = (() => {
     renderProfileHeader,
     renderSidebarProfile,
     renderScoreCard,
+    renderMetrics,
     renderFollowerCards,
     renderActivity,
     renderInsights,
@@ -766,6 +607,7 @@ const UI = (() => {
     resetDashboard,
     initSidebarNav,
     initPlaceholderCycle,
+    initRecentSearchClicks,
   };
 
 })();
