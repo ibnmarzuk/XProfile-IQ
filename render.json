@@ -1,0 +1,16 @@
+{
+  "buildCommand": "",
+  "publishDirectory": ".",
+  "envVars": [
+    {
+      "key": "RAPID_API_KEY",
+      "description": "Your RapidAPI Key for Twitter API",
+      "scope": "runtime"
+    },
+    {
+      "key": "RAPID_API_HOST",
+      "description": "RapidAPI Host for Twitter API",
+      "scope": "runtime"
+    }
+  ]
+}
